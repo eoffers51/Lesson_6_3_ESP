@@ -30,6 +30,8 @@ ESP-IDF **v6.0.2** project for an **ESP32-S3-DevKitC-1** clone (Beetroot Academy
 
 UART output only: just the board on COM5 (CH343 USB-UART). There are no external LEDs or buttons. The small green LED that flickers with log output is the UART TX light.
 
+Wokwi: `diagram.json` + `wokwi.toml`, and the public project https://wokwi.com/projects/480230992285080577. When `main/main.c` changes, re-sync the Wokwi copy as `wokwi/README.md` describes. Wokwi uses the Arduino core (1 ms tick, ESP_LOG hidden → `wokwi/wokwi_log.h`).
+
 ## Repo
 
 GitHub repo `eoffers51/Lesson_6_3_ESP` (public, `main`, HTTPS remote). Follow the academy rules in the parent CLAUDE.md.
