@@ -32,7 +32,7 @@ UART output only: just the board on COM5 (CH343 USB-UART). There are no external
 
 ## Repo
 
-The project goes in GitHub repo `eoffers51/Lesson_6_3_ESP` (not created yet; follow the academy rules in the parent CLAUDE.md).
+GitHub repo `eoffers51/Lesson_6_3_ESP` (public, `main`, HTTPS remote). Follow the academy rules in the parent CLAUDE.md.
 
 ## Code style
 
