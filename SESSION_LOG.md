@@ -4,17 +4,23 @@ Claude's handoff notes between sessions. This is separate from `docs/log.md`, wh
 Keep **Current state** short and up to date. Add new entries at the top of **History**, 3–6 lines each.
 
 ## Current state
-- **L6.3 verified in Wokwi, not on the real board** (2026-11-09). `main/main.c` implements all four tasks (firmware-engineer, on the learner's "write all for me"); builds with 0 warnings; reviewer OK.
-- Wokwi run (public project https://wokwi.com/projects/480230992285080577, Arduino core, 1 ms tick), 55 s simulated: Sensor exactly every 500 ms (26, 526, …); Worker at 3027/6028/9029/12031/15037 ms (vTaskDelay drift ~1 ms per cycle), free heap flat at 358396 bytes; Maintenance at 10027 and 20027 ms (fixed grid); no Sensor lines 10026→12027, then 4 catch-up lines at 12027–12029, normal rhythm from 12526. In Wokwi, Sensor printed at 10026 and Maintenance woke at 10027: 1 ms apart, a near miss for the reviewer's suspend-while-printing hazard.
-- **Next:** optionally flash the real board (100 Hz tick) and compare, then the control questions (none in TASK.md: ask the coach's own), then wrap-up and the end-of-task examiner run.
-- Prediction result: learner predicted "same rhythm"; the log showed a 4-line burst, and the learner counted 4 correctly. Learner **skipped** the "why 4?" question (xTaskDelayUntil sees last_wake + 500 ms already in the past and returns at once, tasks.c:1532/1543). Revisit as a recall question.
-- Design: priorities 2/3/4/5 (`ESP_TASK_MAIN_PRIO + 1..4`, `_Static_assert` below esp_timer); all tasks pinned to core 1; 3072-byte stacks; Worker logs free heap (leak check).
-- Reviewer notes to teach from: (1) suspending Sensor while it holds the console lock would deadlock Maintenance's print (not reachable with current tick phase); (2) startup create failures are only logged, and main.c:111 uses TAG_SENSOR from app_main; (3) Worker line has a free-heap suffix after the required text; (4) stack size not measured (`uxTaskGetStackHighWaterMark`); (5) `main/CMakeLists.txt` exports INCLUDE_DIRS ".".
+- **L6.3 done (Wokwi-verified, 2026-11-09).** `main/main.c` implements all four tasks; builds with 0 warnings; reviewer OK.
+- Wokwi run (public project https://wokwi.com/projects/480230992285080577, Arduino core, 1 ms tick), 55 s simulated: Sensor every 500 ms (26, 526, …); Worker at 3027/6028/9029/12031/15037 ms (vTaskDelay drift ~1 ms per cycle); free heap flat at 358396 bytes; Maintenance at 10027 and 20027 ms; after the 2 s pause, 4 catch-up Sensor lines at 12027–12029, normal rhythm from 12526.
+- **Open, optional:** run on the real board (100 Hz tick) and compare. COM5 is shared with the bench camera, one at a time.
+- Control questions: none in TASK.md; the learner skipped them and `docs/log.md` was not written. The "why 4?" question is now recall item R001.
+- Design: priorities 2/3/4/5 (`ESP_TASK_MAIN_PRIO + 1..4`, `_Static_assert` below esp_timer); all tasks on core 1; 3072-byte stacks; Worker logs free heap.
+- Reviewer notes to teach from: suspending Sensor while it holds the console lock would deadlock Maintenance's print (Wokwi: Sensor 10026, Maintenance 10027, 1 ms apart); startup create failures are only logged; stack size not measured (`uxTaskGetStackHighWaterMark`); `main/CMakeLists.txt` exports INCLUDE_DIRS ".".
 - Explainer: https://claude.ai/artifact/KuKkJRba8m9Mqj2qVmfFyJ
-- Toolchain: ESP-IDF v6.0.2, ESP32-S3, tick 100 Hz. Output is UART only, on COM5 (shared with the bench camera serial capture, one at a time). Native FreeRTOS API only.
-- Not committed since the setup commits: `main/main.c`, `SESSION_LOG.md`, `docs/recall.md`.
+- Toolchain: ESP-IDF v6.0.2, ESP32-S3. Output is UART only, on COM5. Native FreeRTOS API only.
+- Repo `eoffers51/Lesson_6_3_ESP` is up to date (code, Wokwi files, README, logs all pushed).
 
 ## History
+
+### 2026-11-09 — L6.3 wrap-up (task-check, close)
+- Learner chose wrap-up: skipped the control questions and the "why 4?" question (now R001 in the recall bank).
+- Task-check: the four "Done when" items are evidenced by the Wokwi run and by `main/main.c` (xTaskDelayUntil line 57, vTaskDelete(NULL) line 68, priorities lines 19–25). `docs/log.md` was not written by the learner.
+- L6.3 marked done as simulator-verified. The real-board run is optional and open.
+- Recall: R001–R004 added (box 1, next 2026-11-10). Cross-project: equipment-monitor R011 passed (box 3, next 2026-11-16); Lesson_2_3_Diods R001 passed (box 2, next 2026-11-12).
 
 ### 2026-11-09 — L6.3 brief, code and review
 - Recall: R011 (equipment-monitor) answered: 10 ms tick and `pdMS_TO_TICKS(5)` = 0 correct; "doesn't wait" correct, coach added "yields only to equal priority". R001 (Lesson_2_3_Diods) answered correctly ("so the timing doesn't drift"). Grade both as passed in their own banks.
